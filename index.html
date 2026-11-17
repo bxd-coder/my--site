@@ -140,7 +140,7 @@
     /* ===== МЕНЮ ===== */
     .main-menu {
       position: absolute;
-      top: 59%; left: 9vw;
+      top: 60vh; left: 4vw;
       transform: translateY(-50%);
       display: flex; flex-direction: column;
       gap: 0.3vh;
@@ -316,6 +316,13 @@
     }
 
     /* ===== МУЗЫКА ===== */
+    .patch-history { margin-top: 16px; border-left: 4px solid var(--p3-red); }
+    .patch-history h2 { font-size: 1.1rem; color: var(--p3-red); margin-bottom: 6px; }
+    .patch-history p { font-size: 0.6rem; color: var(--p3-cyan); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .patch-history ul { font-size: 0.58rem; line-height: 1.4; list-style: none; padding-left: 2px; }
+    .patch-history li { margin-bottom: 4px; color: #fff; opacity: 0.9; }
+    .patch-history li::before { content: '▸ '; color: var(--p3-red); font-weight: 700; }
+
     .music-player { position: absolute; bottom: 24px; left: 4vw; z-index: 50; display: flex; flex-direction: column; gap: 8px; }
     .music-controls { display: flex; gap: 4px; }
     .music-btn {
@@ -446,6 +453,7 @@
     <button class="menu-btn" data-target="5">Friday<span class="mb-date" data-date="5"></span></button>
     <button class="menu-btn" data-target="6">Saturday<span class="mb-date" data-date="6"></span></button>
     <button class="menu-btn" data-target="bells">Bells</button>
+    <button class="menu-btn" data-target="history">History</button>
   </nav>
 
   <main class="content-panel" id="content">
@@ -461,6 +469,7 @@
     </div>
     <div class="music-sub" id="musicSub">Persona 3 Reload</div>
   </div>
+
   <div class="status-msg" id="statusMsg">STAY COOL, STAS.</div>
   <div id="yt-holder"><div id="yt-player"></div></div>
 
@@ -482,11 +491,11 @@ let currentTrackIdx = 0;
 //  ДАННЫЕ
 const DATA = {
   0: { name: "Sunday", lessons: [] },
-  1: { name: "Monday", lessons: [ { n:2, time:"10:00 – 11:20", type:"sub1", sub1:{ subject:"Ин. яз. в проф. деят.", room:"410", teacher:"Харина О.Г." } }, { n:3, time:"11:40 – 13:00", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } }, { n:4, time:"13:10 – 14:30", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } } ] },
+  1: { name: "Monday", lessons: [ { n:2, time:"10:15 – 11:50", type:"sub1", sub1:{ subject:"Ин. яз. в проф. деят.", room:"410", teacher:"Харина О.Г." } }, { n:3, time:"12:30 – 14:05", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } }, { n:4, time:"14:15 – 15:50", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } } ] },
   2: { name: "Tuesday", lessons: [] },
-  3: { name: "Wednesday", lessons: [ { n:2, time:"10:00 – 11:20", type:"common", subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, { n:3, time:"11:40 – 13:00", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"404", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } }, { n:4, time:"13:10 – 14:30", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } } ] },
-  4: { name: "Thursday", lessons: [ { n:3, time:"11:40 – 13:00", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } }, { n:4, time:"13:10 – 14:30", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } } ] },
-  5: { name: "Friday", lessons: [ { n:2, time:"10:00 – 11:20", type:"split", sub1:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } } ] },
+  3: { name: "Wednesday", lessons: [ { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, sub2:{ subject:"Докумен. и контр. в проф. деятельн.", room:"403", teacher:"Пашкевич М.А." } }, { n:3, time:"12:30 – 14:05", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"404", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } }, { n:4, time:"14:15 – 15:50", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } } ] },
+  4: { name: "Thursday", lessons: [ { n:3, time:"12:30 – 14:05", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } }, { n:4, time:"14:15 – 15:50", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } } ] },
+  5: { name: "Friday", lessons: [ { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } } ] },
   6: { name: "Saturday", lessons: [ { n:2, time:"10:00 – 11:20", type:"sub1", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." } }, { n:3, time:"11:40 – 13:00", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } }, { n:4, time:"13:10 – 14:30", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } } ] },
 };
 
@@ -676,6 +685,31 @@ function render(target, noAnim) {
     contentTitle.textContent = 'BELLS';
     panelMeta.innerHTML = '<span class="meta-chip">РАСПИСАНИЕ ЗВОНКОВ</span>';
     contentBody.innerHTML = bellsHTML();
+    return;
+  }
+
+  if (target === 'history') {
+    contentTitle.textContent = 'PATCH HISTORY';
+    panelMeta.innerHTML = '<span class="meta-chip">VERSION 1.2</span>';
+    contentBody.innerHTML = `
+      <div class="lesson">
+        <div class="sub-title">V1.2 — 17.11.2026</div>
+        <div class="subj" style="font-size:0.9rem; text-transform:none;">
+          • Исправлено разделение по группам (теперь учитываются разные кабинеты/учителя при одинаковых предметах)<br>
+          • Patch History вынесен в отдельную вкладку меню (больше не перекрывает инфо)<br>
+          • Улучшен парсер ячеек для более точного определения кабинетов
+        </div>
+      </div>
+      <div class="lesson" style="opacity:0.7">
+        <div class="sub-title">V1.1 — 17.11.2026</div>
+        <div class="subj" style="font-size:0.9rem; text-transform:none;">
+          • Исправлено время: будни 08:30–17:30, суббота 08:30–15:55<br>
+          • Добавлены звуки клика (Web Audio API)<br>
+          • Добавлен плейлист синтезатора (Ambient) для локального запуска<br>
+          • Автообновление расписания через Python скрипт
+        </div>
+      </div>
+    `;
     return;
   }
 
