@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>242 MC — Расписание · Persona 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --p3-blue: #0044ff;
+      --p3-light-blue: #00aaff;
+      --p3-cyan: #5ce1e6;
+      --p3-red: #ff003c;
+      --bg-dark: #021128;
+      --p3-yellow: #ffeb3b;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        url('https://www.transparenttextures.com/patterns/carbon-fibre.png'),
+        radial-gradient(circle at 80% 20%, rgba(0,170,255,0.15) 0%, transparent 55%),
+        radial-gradient(circle at 20% 85%, rgba(255,0,60,0.1) 0%, transparent 55%),
+        linear-gradient(135deg, #021128 0%, #000e2b 35%, #001a44 100%);
+      color: #fff;
+      font-family: 'Oswald', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 100;
+    }
+    .p3-moon {
+      position: fixed; top: -10vh; right: -10vw;
+      width: 42vw; height: 42vw;
+      background: radial-gradient(circle at 35% 35%, #fff, rgba(255,255,255,0));
+      border-radius: 50%;
+      opacity: 0.11;
+      filter: blur(22px);
+      z-index: 0; pointer-events: none;
+      animation: pulseMoon 11s ease-in-out infinite;
+    }
+    @keyframes pulseMoon {
+      0%,100%{opacity:0.09;transform:scale(1);}
+      50%{opacity:0.2;transform:scale(1.06);}
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 100% 4px; pointer-events: none; z-index: 1;
+    }
+
+    /* ===== ЛЕВАЯ ЧАСТЬ ===== */
+    .giant-text {
+      position: absolute; left: -1vw; top: 0;
+      font-family: 'Anton', sans-serif;
+      font-size: 30vh;
+      color: #fff; opacity: 0.12;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      line-height: 0.8; letter-spacing: -6px;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* Нарисованный арт (SVG) */
+    .art {
+      position: absolute; left: 0; bottom: 0;
+      width: 48vw; height: 100vh;
+      z-index: 2; pointer-events: none; opacity: 0.55;
+      animation: floatArt 14s ease-in-out infinite;
+    }
+    .art svg { width: 100%; height: 100%; }
+    @keyframes floatArt {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+    .hero-img {
+      position: absolute; left: 2vw; bottom: 0;
+      height: 85vh; max-width: 40vw; object-fit: contain; object-position: bottom left;
+      z-index: 3; pointer-events: none;
+      filter: drop-shadow(8px 8px 0 rgba(0,0,0,0.3));
+    }
+
+    /* ===== БЛОК СЛЕВА: ШКОЛА / ДАТА / ГРУППА ===== */
+    .side-info {
+      position: absolute; top: 4vh; left: 4vw;
+      z-index: 12;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+      max-width: 34vw;
+    }
+
+    .info-box {
+      background: #fff; border: 3px solid #000;
+      padding: 8px 20px; color: #000;
+      transform: skewX(-5deg);
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    }
+    .info-box h2 { font-family: 'Anton', sans-serif; font-size: 1.9rem; line-height: 1.1; }
+    .info-box p { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+    .date-box {
+      position: relative; overflow: hidden;
+      background: #fff; border: 3px solid #000; color: #000;
+      padding: 10px 18px 9px; min-width: 190px;
+      transform: skewX(-5deg);
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    }
+    .date-box::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+      background: var(--p3-red);
+    }
+    /* Anton без кириллицы — русский текст набираем Oswald */
+    .db-day { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase; }
+    .db-date { font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; opacity: 0.6; }
+    .db-clock {
+      font-family: 'Anton', sans-serif; font-size: 2.3rem; line-height: 1;
+      color: var(--p3-blue); letter-spacing: 3px; margin-top: 3px;
+    }
+    .db-label { font-size: 0.55rem; font-weight: 600; letter-spacing: 2px; opacity: 0.45; }
+
+    .group-switch {
+      display: flex; align-items: center; gap: 8px;
+      transform: skewX(-5deg);
+    }
+    .gs-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 2px; opacity: 0.7; }
+    .gs-btn {
+      font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
+      background: rgba(0,0,0,0.35); border: 2px solid var(--p3-cyan); color: #fff;
+      padding: 3px 12px 2px; cursor: pointer; transition: all 0.15s ease;
+      transform: skewX(-8deg);
+    }
+    .gs-btn:hover { background: var(--p3-cyan); color: #000; }
+    .gs-btn.active { background: #fff; color: #000; border-color: #fff; box-shadow: 4px 4px 0 rgba(0,0,0,0.35); }
+
+    /* ===== МЕНЮ ===== */
+    .main-menu {
+      position: absolute;
+      top: 59%; left: 9vw;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column;
+      gap: 0.3vh;
+      z-index: 20;
+      max-width: 40vw;
+    }
+    .menu-btn {
+      display: flex; align-items: baseline; gap: 0.35em;
+      font-family: 'Anton', sans-serif;
+      font-size: min(6vh, 4.6vw);
+      line-height: 1;
+      padding: 0.1em 0.4em 0.1em 0.2em;
+      text-transform: uppercase;
+      background: transparent; border: none; cursor: pointer;
+      text-align: left; position: relative;
+      transform: rotate(-9deg) skewX(-12deg);
+      transform-origin: left center;
+      transition: all 0.2s ease;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--p3-cyan);
+      text-shadow: 0 0 12px rgba(0,170,255,0.5);
+      letter-spacing: 1px;
+    }
+    .menu-btn:hover { -webkit-text-stroke: 1.5px #fff; }
+    .menu-btn.active {
+      color: #000; -webkit-text-stroke: 0; text-shadow: none;
+      transform: rotate(-9deg) skewX(-12deg) translateX(18px);
+      z-index: 2;
+    }
+    .menu-btn.active::before {
+      content: ''; position: absolute; inset: 0 -10px 0 -6px;
+      background: #fff; z-index: -1;
+      border-bottom: 6px solid var(--p3-red);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    }
+    .mb-date {
+      font-family: 'Oswald', sans-serif; font-size: 0.32em; font-weight: 600;
+      letter-spacing: 1px; color: var(--p3-cyan);
+      -webkit-text-stroke: 0px var(--p3-cyan);
+      transform: skewX(6deg);
+    }
+    .menu-btn.active .mb-date { color: var(--p3-red); }
+    .mb-today {
+      font-family: 'Oswald', sans-serif; font-size: 0.28em; font-weight: 700;
+      letter-spacing: 1px; background: var(--p3-red); color: #fff;
+      -webkit-text-stroke: 0px var(--p3-red);
+      padding: 1px 6px; line-height: 1.5;
+      transform: skewX(6deg);
+    }
+
+    /* ===== ПАНЕЛЬ РАСПИСАНИЯ ===== */
+    .content-panel {
+      position: absolute; top: 0; right: 0;
+      width: 44vw; height: 100vh;
+      padding: 40px 36px 90px;
+      overflow-y: auto;
+      background: rgba(0,15,40,0.72);
+      backdrop-filter: blur(10px);
+      border-left: 2px solid var(--p3-cyan);
+      z-index: 15;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .content-panel.open { transform: translateX(0); }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--p3-cyan); }
+
+    .schedule-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 2.6rem; color: #fff; text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--p3-cyan);
+      padding-bottom: 8px; letter-spacing: 2px;
+    }
+
+    .panel-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .meta-chip {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 3px 10px; border: 1px solid rgba(92,225,230,0.5); color: var(--p3-cyan);
+    }
+    .meta-chip.red { background: var(--p3-red); border-color: var(--p3-red); color: #fff; }
+
+    .lesson {
+      background: rgba(0,30,80,0.8);
+      border: 1px solid var(--p3-light-blue);
+      padding: 14px 16px; margin-bottom: 14px; position: relative;
+    }
+    .content-panel.open .lesson {
+      animation: lessonIn 0.45s cubic-bezier(0.2,0.8,0.2,1) both;
+    }
+    .content-panel .no-anim .lesson { animation: none !important; }
+    @keyframes lessonIn {
+      from { opacity: 0; transform: translateX(26px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .lesson::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+      background: var(--p3-cyan);
+    }
+    .lesson.is-now {
+      border-color: var(--p3-red);
+      background: rgba(70,0,26,0.55);
+      box-shadow: 0 0 0 1px var(--p3-red), 0 0 26px rgba(255,0,60,0.35);
+    }
+    .lesson.is-now::before { background: var(--p3-red); }
+    .lesson.is-past { opacity: 0.6; }
+
+    .lesson-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 8px; margin-bottom: 10px;
+      gap: 10px;
+    }
+    .l-left { display: flex; align-items: center; gap: 10px; }
+    .l-num { font-family: 'Anton', sans-serif; font-size: 1.6rem; color: var(--p3-cyan); line-height: 1; }
+    .l-time { font-weight: 600; color: #fff; opacity: 0.85; letter-spacing: 1px; white-space: nowrap; }
+    .l-status {
+      font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.65rem; letter-spacing: 1.5px;
+      padding: 2px 8px; transform: skewX(-8deg); background: var(--p3-cyan); color: #000;
+    }
+    .l-status.is-now { background: var(--p3-red); color: #fff; animation: blink 1.8s ease-in-out infinite; }
+    .l-status.is-next { background: #fff; color: #000; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+    .subj { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
+    .teach { font-size: 0.9rem; color: var(--p3-cyan); margin-top: 3px; }
+    .room { font-size: 0.85rem; opacity: 0.7; }
+
+    .split-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; }
+    .sub-col { padding: 10px; background: rgba(0,0,0,0.25); border: 1px solid rgba(0,170,255,0.25); }
+    .sub-col.empty { opacity: 0.45; }
+    .sub-col.mine { background: rgba(0,70,150,0.4); border-color: var(--p3-cyan); }
+    .sub-col.other { opacity: 0.55; }
+    .sub-col.other .subj { font-size: 0.9rem; }
+    .sub-title {
+      font-family: 'Anton', sans-serif; font-size: 0.8rem; color: var(--p3-red);
+      margin-bottom: 5px; letter-spacing: 1px;
+    }
+    .sub-col.mine .sub-title { color: var(--p3-cyan); }
+    .sub-col .subj { font-size: 0.98rem; }
+    .tag-you {
+      display: inline-block; vertical-align: middle; margin-left: 6px;
+      font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.55rem; letter-spacing: 1px;
+      background: var(--p3-red); color: #fff; padding: 1px 6px 0;
+      transform: skewX(-8deg);
+    }
+
+    .break-row {
+      text-align: center; font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 2px; color: var(--p3-cyan); opacity: 0.7;
+      margin: -4px 0 12px;
+    }
+
+    .day-off {
+      text-align: center; padding: 50px 10px;
+      font-family: 'Anton', sans-serif; font-size: 2rem;
+      color: var(--p3-cyan); letter-spacing: 3px;
+    }
+    .day-off small { display: block; font-family: 'Oswald'; font-size: 1rem; color: #fff; opacity: 0.6; margin-top: 8px; letter-spacing: 1px; }
+
+    /* Звонки */
+    .bell-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-bottom: 1px dashed rgba(255,255,255,0.12);
+    }
+    .b-num { font-family: 'Anton', sans-serif; font-size: 1.1rem; color: var(--p3-cyan); }
+    .b-time { font-weight: 600; letter-spacing: 1px; }
+    .bell-break {
+      text-align: center; font-size: 0.66rem; font-weight: 600;
+      letter-spacing: 2px; color: var(--p3-red); padding: 6px 0 2px;
+    }
+
+    /* ===== МУЗЫКА ===== */
+    .music-player { position: absolute; bottom: 24px; left: 4vw; z-index: 50; display: flex; flex-direction: column; gap: 8px; }
+    .music-controls { display: flex; gap: 4px; }
+    .music-btn {
+      background: rgba(0,0,0,0.35); border: 2px solid var(--p3-cyan);
+      color: #fff; font-family: 'Anton', sans-serif;
+      font-size: 1.1rem; padding: 6px 16px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 1px;
+      transform: skewX(-8deg); transition: all 0.2s;
+    }
+    .music-btn:hover { background: var(--p3-cyan); color: #000; }
+    .music-next {
+      background: rgba(255,255,255,0.1); border: 2px solid #fff;
+      color: #fff; font-size: 0.8rem; padding: 0 10px; cursor: pointer;
+      transform: skewX(-8deg);
+    }
+    .music-next:hover { background: #fff; color: #000; }
+    .music-sub { font-size: 0.75rem; color: var(--p3-cyan); margin-top: 0; letter-spacing: 1px; font-weight: 600; }
+    
+    /* Доп инфа: Статус дня */
+    .status-msg {
+      position: absolute; bottom: 24px; right: 46vw;
+      font-family: 'Oswald', sans-serif; font-size: 0.8rem;
+      color: var(--p3-yellow); text-transform: uppercase; letter-spacing: 2px;
+      z-index: 10; transform: rotate(-2deg);
+      background: rgba(0,0,0,0.5); padding: 4px 12px;
+      border-left: 4px solid var(--p3-yellow);
+    }
+    #yt-holder { position: fixed; width: 2px; height: 2px; left: -10px; top: -10px; opacity: 0; pointer-events: none; }
+
+    /* ===== НИЗКИЕ ЭКРАНЫ (ноутбуки) ===== */
+    @media (min-width: 901px) and (max-height: 860px) {
+      .side-info { top: 3vh; gap: 8px; }
+      .info-box { padding: 6px 16px; }
+      .info-box h2 { font-size: 1.5rem; }
+      .date-box { padding: 7px 14px 6px; min-width: 160px; }
+      .db-clock { font-size: 1.8rem; }
+      .db-date { font-size: 0.72rem; }
+      .main-menu { top: 57%; }
+    }
+
+    /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
+    @media (max-width: 900px) {
+      body { overflow-y: auto; overflow-x: hidden; height: auto; }
+      .giant-text, .art, .hero-img { display: none; }
+      .side-info {
+        position: relative; top: auto; left: auto;
+        padding: 14px 16px 0; max-width: none;
+        flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: 10px;
+      }
+      .info-box { transform: none; box-shadow: 3px 3px 0 rgba(0,0,0,0.3); }
+      .date-box { transform: none; box-shadow: 3px 3px 0 rgba(0,0,0,0.3); min-width: 0; padding: 8px 14px 7px; }
+      .db-clock { font-size: 1.5rem; }
+      .group-switch { transform: none; width: 100%; padding-bottom: 4px; }
+      .main-menu {
+        position: relative; top: auto; left: auto; transform: none;
+        padding: 16px 16px 24px; max-width: none; gap: 5px;
+      }
+      .menu-btn { font-size: 2rem; transform: skewX(-10deg); transform-origin: left; text-shadow: none; }
+      .menu-btn.active { transform: skewX(-10deg) translateX(10px); }
+      .menu-btn .mb-date { font-size: 0.42em; }
+      .content-panel {
+        position: relative; width: 100%; height: auto;
+        transform: none; padding: 20px 16px 30px;
+        border-left: none; border-top: 2px solid var(--p3-cyan);
+      }
+      .music-player { position: relative; left: auto; bottom: auto; padding: 0 16px 24px; }
+      .split-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .art, .l-status.is-now { animation: none; }
+      .content-panel { transition: none; }
+      .content-panel.open .lesson { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="giant-text">SCHEDULE</div>
+
+  <div class="p3-moon"></div>
+
+  <!-- Нарисованный арт: луна и осколки (файлы не нужны) -->
+  <div class="art">
+    <svg viewBox="0 0 400 800" preserveAspectRatio="xMinYMax slice">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5ce1e6" stop-opacity="0.9"/>
+          <stop offset="1" stop-color="#0044ff" stop-opacity="0.1"/>
+        </linearGradient>
+      </defs>
+      <polygon points="0,800 0,150 260,0 330,260 180,800" fill="url(#g1)" opacity="0.45"/>
+      <polygon points="40,800 120,300 300,380 230,800" fill="#fff" opacity="0.18"/>
+      <polygon points="0,500 200,420 120,800 0,800" fill="#00aaff" opacity="0.35"/>
+      <circle cx="230" cy="190" r="95" fill="#fff" opacity="0.9"/>
+      <circle cx="268" cy="165" r="85" fill="#021a44"/>
+      <polygon points="60,100 300,40 120,130" fill="#ff003c" opacity="0.75"/>
+    </svg>
+  </div>
+  <!-- Если положишь hero.png рядом — он появится, если нет — скроется -->
+  <img class="hero-img" src="hero.png" alt="" onerror="this.style.display='none'">
+
+  <div class="side-info">
+    <div class="info-box">
+      <h2>242 MC</h2>
+      <p>Камчатский мед. колледж</p>
+    </div>
+
+    <div class="date-box">
+      <div class="db-day" id="dateDay">Сегодня</div>
+      <div class="db-date" id="dateFull">—</div>
+      <div class="db-clock" id="clock">00:00</div>
+      <div class="db-label">CURRENT TIME</div>
+    </div>
+
+    <div class="group-switch">
+      <span class="gs-label">ПОДГРУППА</span>
+      <button class="gs-btn" data-group="1">ГР. 1</button>
+      <button class="gs-btn" data-group="2">ГР. 2</button>
+    </div>
+  </div>
+
+  <nav class="main-menu" id="menu">
+    <button class="menu-btn" data-target="1">Monday<span class="mb-date" data-date="1"></span></button>
+    <button class="menu-btn" data-target="2">Tuesday<span class="mb-date" data-date="2"></span></button>
+    <button class="menu-btn" data-target="3">Wednesday<span class="mb-date" data-date="3"></span></button>
+    <button class="menu-btn" data-target="4">Thursday<span class="mb-date" data-date="4"></span></button>
+    <button class="menu-btn" data-target="5">Friday<span class="mb-date" data-date="5"></span></button>
+    <button class="menu-btn" data-target="6">Saturday<span class="mb-date" data-date="6"></span></button>
+    <button class="menu-btn" data-target="bells">Bells</button>
+  </nav>
+
+  <main class="content-panel" id="content">
+    <h1 class="schedule-title" id="content-title">SELECT DAY</h1>
+    <div class="panel-meta" id="panel-meta"></div>
+    <div id="content-body"></div>
+  </main>
+
+  <div class="music-player">
+    <div class="music-controls">
+      <button class="music-btn" id="playBtn">▶ Play BGM</button>
+      <button class="music-next" id="nextBtn" title="Next Track">NEXT</button>
+    </div>
+    <div class="music-sub" id="musicSub">Persona 3 Reload</div>
+  </div>
+  <div class="status-msg" id="statusMsg">STAY COOL, STAS.</div>
+  <div id="yt-holder"><div id="yt-player"></div></div>
+
+<script>
+// ===================================================
+//  НАСТРОЙКИ МУЗЫКИ
+// ===================================================
+const PLAYLIST = [
+  { id: '4d6x1CIgLSc', title: 'It\'s Going Down Now' },
+  { id: '8Z5fN8S5Q9c', title: 'Color Your Night' },
+  { id: 'uDTo8_u4B-s', title: 'Burn My Dread (Reload)' },
+  { id: 'X305f-v-n8c', title: 'Changing Seasons' },
+  { id: '7o0mD8-6jHk', title: 'Mass Destruction' },
+  { id: '5E6v_E7767Y', title: 'When the Moon\'s Reaching Out Stars' }
+];
+let currentTrackIdx = 0;
+
+// ===================================================
+//  ДАННЫЕ
+const DATA = {
+  0: { name: "Sunday", lessons: [] },
+  1: { name: "Monday", lessons: [ { n:2, time:"10:00 – 11:20", type:"sub1", sub1:{ subject:"Ин. яз. в проф. деят.", room:"410", teacher:"Харина О.Г." } }, { n:3, time:"11:40 – 13:00", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } }, { n:4, time:"13:10 – 14:30", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } } ] },
+  2: { name: "Tuesday", lessons: [] },
+  3: { name: "Wednesday", lessons: [ { n:2, time:"10:00 – 11:20", type:"common", subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, { n:3, time:"11:40 – 13:00", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"404", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } }, { n:4, time:"13:10 – 14:30", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } } ] },
+  4: { name: "Thursday", lessons: [ { n:3, time:"11:40 – 13:00", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } }, { n:4, time:"13:10 – 14:30", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } } ] },
+  5: { name: "Friday", lessons: [ { n:2, time:"10:00 – 11:20", type:"split", sub1:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } } ] },
+  6: { name: "Saturday", lessons: [ { n:2, time:"10:00 – 11:20", type:"sub1", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." } }, { n:3, time:"11:40 – 13:00", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } }, { n:4, time:"13:10 – 14:30", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } } ] },
+};
+
+// Звонки: [номер, время, что после пары]
+const BELLS = {
+  weekday: [
+    ["01", "08:30 – 10:05", "перерыв 10 мин"],
+    ["02", "10:15 – 11:50", "обед 40 мин"],
+    ["03", "12:30 – 14:05", "перерыв 10 мин"],
+    ["04", "14:15 – 15:50", ""]
+  ],
+  saturday: [
+    ["01", "08:30 – 09:50", "перерыв 10 мин"],
+    ["02", "10:00 – 11:20", "перерыв 20 мин"],
+    ["03", "11:40 – 13:00", "перерыв 10 мин"],
+    ["04", "13:10 – 14:30", ""]
+  ]
+};
+
+// ===================================================
+//  ЭЛЕМЕНТЫ
+// ===================================================
+const menuBtns = Array.from(document.querySelectorAll('.menu-btn'));
+const contentPanel = document.getElementById('content');
+const contentTitle = document.getElementById('content-title');
+const panelMeta = document.getElementById('panel-meta');
+const contentBody = document.getElementById('content-body');
+const clockEl = document.getElementById('clock');
+const dateDayEl = document.getElementById('dateDay');
+const dateFullEl = document.getElementById('dateFull');
+const statusMsgEl = document.getElementById('statusMsg');
+
+const MESSAGES = [
+  "STAY COOL, STAS.",
+  "MEMENTO MORI.",
+  "THE DARK HOUR APPROACHES.",
+  "TIME FOR SOME TRAINING.",
+  "NEVER SETTLE FOR LESS.",
+  "STUDY HARD, PLAY HARDER."
+];
+
+function updateStatus() {
+  const h = new Date().getHours();
+  if (h >= 22 || h < 6) statusMsgEl.textContent = "THE DARK HOUR IS HERE.";
+  else statusMsgEl.textContent = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+}
+setInterval(updateStatus, 60000);
+updateStatus();
+
+const DAYS_RU = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const MONTHS_RU = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+const pad2 = n => String(n).padStart(2, '0');
+
+// ===================================================
+//  ПОДГРУППА (запоминается в браузере)
+// ===================================================
+let group = localStorage.getItem('p3-group') === '2' ? '2' : '1';
+const groupBtns = Array.from(document.querySelectorAll('.gs-btn'));
+function paintGroup() {
+  groupBtns.forEach(b => b.classList.toggle('active', b.dataset.group === group));
+}
+paintGroup();
+
+groupBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    group = btn.dataset.group;
+    localStorage.setItem('p3-group', group);
+    paintGroup();
+    if (currentTarget) render(currentTarget);
+  });
+});
+
+// ===================================================
+//  ДАТЫ В МЕНЮ
+// ===================================================
+function paintDates() {
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  document.querySelectorAll('.mb-date').forEach(el => {
+    const day = new Date(monday);
+    day.setDate(monday.getDate() + Number(el.dataset.date) - 1);
+    el.textContent = pad2(day.getDate()) + '.' + pad2(day.getMonth() + 1);
+  });
+
+  const todayBtn = document.querySelector(`.menu-btn[data-target="${now.getDay()}"]`);
+  if (todayBtn && !todayBtn.querySelector('.mb-today')) {
+    todayBtn.insertAdjacentHTML('beforeend', '<span class="mb-today">TODAY</span>');
+  }
+}
+
+// ===================================================
+//  ЧАСЫ / ДАТА
+// ===================================================
+function tick() {
+  const now = new Date();
+  clockEl.textContent = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+  dateDayEl.textContent = DAYS_RU[now.getDay()];
+  dateFullEl.textContent = `${now.getDate()} ${MONTHS_RU[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+// ===================================================
+//  РЕНДЕР
+// ===================================================
+let currentTarget = null;
+
+function parseRange(str) {
+  const m = str.match(/(\d{1,2}):(\d{2})\s*[–—-]\s*(\d{1,2}):(\d{2})/);
+  if (!m) return { s: 0, e: 0 };
+  return { s: +m[1] * 60 + +m[2], e: +m[3] * 60 + +m[4] };
+}
+
+function plural(n) {
+  const m = n % 10, h = n % 100;
+  let w = 'ПАР';
+  if (m === 1 && h !== 11) w = 'ПАРА';
+  else if (m >= 2 && m <= 4 && (h < 10 || h >= 20)) w = 'ПАРЫ';
+  return `${n} ${w}`;
+}
+
+function subCard(data, title, extraClass, tag) {
+  if (!data) {
+    return `<div class="sub-col empty ${extraClass}">
+      <div class="sub-title">${title}</div>
+      <div class="subj">FREE</div>
+    </div>`;
+  }
+  return `<div class="sub-col ${extraClass}">
+    <div class="sub-title">${title}${tag || ''}</div>
+    <div class="subj">${data.subject}</div>
+    <div class="teach">${data.teacher}</div>
+    <div class="room">Каб: ${data.room}</div>
+  </div>`;
+}
+
+function lessonHTML(l, i, status) {
+  let inner;
+  if (l.type === 'common') {
+    inner = `<div>
+      <div class="subj">${l.subject}</div>
+      <div class="teach">${l.teacher}</div>
+      <div class="room">Каб: ${l.room}</div>
+    </div>`;
+  } else {
+    const mine = group === '1' ? l.sub1 : l.sub2;
+    const other = group === '1' ? l.sub2 : l.sub1;
+    const otherG = group === '1' ? '2' : '1';
+    inner = `<div class="split-grid">
+      ${subCard(mine, `GROUP ${group}`, 'mine', mine ? '<span class="tag-you">ТЫ</span>' : '')}
+      ${subCard(other, `GROUP ${otherG}`, 'other', '')}
+    </div>`;
+  }
+
+  const badge = status === 'now' ? '<span class="l-status is-now">ИДЁТ</span>'
+              : status === 'next' ? '<span class="l-status is-next">ДАЛЕЕ</span>' : '';
+  const cls = ['lesson', status === 'now' ? 'is-now' : '', status === 'past' ? 'is-past' : '']
+    .filter(Boolean).join(' ');
+
+  return `<div class="${cls}" style="animation-delay:${i * 45}ms">
+    <div class="lesson-header">
+      <span class="l-left"><span class="l-num">0${l.n}</span>${badge}</span>
+      <span class="l-time">${l.time}</span>
+    </div>${inner}</div>`;
+}
+
+function bellsHTML() {
+  const block = (title, note, rows) => `
+    <div class="lesson">
+      <div class="lesson-header">
+        <span class="l-num">${title}</span>
+        <span class="l-time">${note}</span>
+      </div>
+      ${rows.map(([n, t, after]) =>
+        `<div class="bell-row"><span class="b-num">${n}</span><span class="b-time">${t}</span></div>` +
+        (after ? `<div class="bell-break">${after.toUpperCase()}</div>` : '')
+      ).join('')}
+    </div>`;
+  return block('MON – FRI', 'обычный день', BELLS.weekday)
+       + block('SATURDAY', 'короткий день', BELLS.saturday);
+}
+
+function render(target, noAnim) {
+  contentBody.classList.toggle('no-anim', !!noAnim);
+
+  if (target === 'bells') {
+    contentTitle.textContent = 'BELLS';
+    panelMeta.innerHTML = '<span class="meta-chip">РАСПИСАНИЕ ЗВОНКОВ</span>';
+    contentBody.innerHTML = bellsHTML();
+    return;
+  }
+
+  const day = DATA[target];
+  if (!day) {
+    contentTitle.textContent = 'SELECT DAY';
+    panelMeta.innerHTML = '';
+    contentBody.innerHTML = '';
+    return;
+  }
+
+  const isToday = target === String(new Date().getDay());
+  contentTitle.textContent = day.name;
+
+  const chips = [];
+  if (isToday) chips.push('<span class="meta-chip red">СЕГОДНЯ</span>');
+  chips.push(`<span class="meta-chip">ПОДГРУППА ${group}</span>`);
+  chips.push(`<span class="meta-chip">${day.lessons.length ? plural(day.lessons.length) : 'ПАР НЕТ'}</span>`);
+  panelMeta.innerHTML = chips.join('');
+
+  if (!day.lessons.length) {
+    contentBody.innerHTML = '<div class="day-off">DAY OFF<small>Пар нет — отдыхай</small></div>';
+    return;
+  }
+
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const ranges = day.lessons.map(l => parseRange(l.time));
+  const nowIdx = isToday ? ranges.findIndex(r => nowMin >= r.s && nowMin < r.e) : -1;
+  const nextIdx = isToday ? ranges.findIndex(r => nowMin < r.s) : -1;
+
+  let html = '';
+  day.lessons.forEach((l, i) => {
+    if (i > 0) {
+      const gap = ranges[i].s - ranges[i - 1].e;
+      if (gap >= 25) html += `<div class="break-row">ПЕРЕРЫВ · ${gap} МИН</div>`;
+    }
+    let status = '';
+    if (isToday) {
+      if (i === nowIdx) status = 'now';
+      else if (i === nextIdx) status = 'next';
+      else if (ranges[i].e <= nowMin) status = 'past';
+    }
+    html += lessonHTML(l, i, status);
+  });
+
+  contentBody.innerHTML = html;
+}
+
+function loadContent(target) {
+  currentTarget = target;
+  contentPanel.classList.remove('open');
+  setTimeout(() => {
+    render(target);
+    contentPanel.scrollTop = 0;
+    contentPanel.classList.add('open');
+  }, 180);
+}
+
+function select(target) {
+  menuBtns.forEach(b => b.classList.toggle('active', b.dataset.target === target));
+  loadContent(target);
+}
+
+menuBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    playClick();
+    select(btn.dataset.target);
+  });
+});
+
+// Быстрый выбор дня с клавиатуры: 1–6, B — звонки
+window.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (/^Digit[0-6]$/.test(e.code)) {
+    playClick();
+    select(e.code.slice(5));
+  }
+  else if (e.code === 'KeyB') {
+    playClick();
+    select('bells');
+  }
+});
+
+// ===================================================
+//  СТАРТ
+// ===================================================
+paintDates();
+tick();
+const startTarget = String(new Date().getDay());
+select(startTarget);
+
+// Раз в 30 секунд: часы + актуальный статус "идёт / далее"
+let lastMinute = new Date().getMinutes();
+setInterval(() => {
+  tick();
+  const now = new Date();
+  if (now.getMinutes() !== lastMinute) {
+    lastMinute = now.getMinutes();
+    const todayKey = String(now.getDay());
+    if (currentTarget === todayKey) render(todayKey, true);
+  }
+}, 30000);
+
+// ===================================================
+//  МУЗЫКА: YouTube -> запасной вариант: синтезатор (плейлист Persona 3)
+// ===================================================
+const playBtn = document.getElementById('playBtn');
+const nextBtn = document.getElementById('nextBtn');
+const musicSub = document.getElementById('musicSub');
+let playing = false;
+let ytPlayer = null, ytReady = false, ytFailed = false;
+const canUseYT = location.protocol.startsWith('http');
+
+if (canUseYT) {
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+  window.onYouTubeIframeAPIReady = () => {
+    ytPlayer = new YT.Player('yt-player', {
+      width: '200', height: '200', videoId: PLAYLIST[0].id,
+      playerVars: { controls: 0 },
+      events: {
+        onReady: () => { ytReady = true; },
+        onStateChange: (e) => {
+          if (e.data === YT.PlayerState.ENDED) nextTrack();
+        },
+        onError: () => { ytFailed = true; if (playing) { ytPlayer.stopVideo(); synthStart(); musicSub.textContent = 'Ambient (fallback)'; } }
+      }
+    });
+  };
+}
+
+function nextTrack() {
+  currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST.length;
+  if (ytReady && !ytFailed) {
+    ytPlayer.loadVideoById(PLAYLIST[currentTrackIdx].id);
+    musicSub.textContent = PLAYLIST[currentTrackIdx].title;
+    playing = true;
+    playBtn.textContent = '❚❚ Pause BGM';
+  } else {
+    synthStart();
+    musicSub.textContent = PLAYLIST[currentTrackIdx].title + ' (Ambient)';
+    playing = true;
+    playBtn.textContent = '❚❚ Pause BGM';
+  }
+}
+
+nextBtn.addEventListener('click', nextTrack);
+
+// --- Синтезатор: плейлист аккордовых прогрессий (в стиле Persona 3) ---
+let ac = null, masterGain = null, synthTimer = null;
+let synthTrackIdx = 0;
+const SYNTH_PLAYLIST = [
+  { name: "Am - F - C - G", chords: [
+    [220.00, 261.63, 329.63],
+    [174.61, 220.00, 261.63],
+    [261.63, 329.63, 392.00],
+    [196.00, 246.94, 293.66]
+  ]},
+  { name: "Em - C - G - D", chords: [
+    [164.81, 207.65, 246.94],
+    [130.81, 164.81, 196.00],
+    [146.83, 196.00, 220.00],
+    [146.83, 185.00, 220.00]
+  ]},
+  { name: "Dm - Bb - F - C", chords: [
+    [146.83, 185.00, 220.00],
+    [116.54, 146.83, 174.61],
+    [130.81, 164.81, 196.00],
+    [130.81, 164.81, 196.00]
+  ]},
+  { name: "Fmaj7 - Am - Dm - G", chords: [
+    [130.81, 164.81, 196.00, 220.00],
+    [164.81, 207.65, 246.94],
+    [146.83, 185.00, 220.00],
+    [146.83, 196.00, 233.08]
+  ]}
+];
+
+function playChord(freqs) {
+  if (!ac || !masterGain) return;
+  const now = ac.currentTime;
+  freqs.forEach(f => {
+    [-6, 6].forEach(det => {
+      const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter();
+      o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = det;
+      fl.type = 'lowpass'; fl.frequency.value = 700;
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(0.05, now + 2);
+      g.gain.linearRampToValueAtTime(0, now + 7.5);
+      o.connect(fl); fl.connect(g); g.connect(masterGain);
+      o.start(now); o.stop(now + 8);
+    });
+  });
+  const b = ac.createOscillator(), bg = ac.createGain();
+  b.type = 'sine'; b.frequency.value = freqs[freqs.length - 1] * 2;
+  bg.gain.setValueAtTime(0, now + 3);
+  bg.gain.linearRampToValueAtTime(0.06, now + 3.05);
+  bg.gain.exponentialRampToValueAtTime(0.0001, now + 6);
+  b.connect(bg); bg.connect(masterGain);
+  b.start(now + 3); b.stop(now + 6.2);
+}
+function synthStart() {
+  if (!ac) {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ac.createGain(); masterGain.gain.value = 0.9; masterGain.connect(ac.destination);
+  }
+  ac.resume();
+  synthTrackIdx = currentTrackIdx;
+  let i = 0;
+  const track = SYNTH_PLAYLIST[synthTrackIdx % SYNTH_PLAYLIST.length];
+  playChord(track.chords[i++ % track.chords.length]);
+  synthTimer = setInterval(() => {
+    playChord(track.chords[i++ % track.chords.length]);
+  }, 6000);
+}
+function synthStop() { clearInterval(synthTimer); if (ac) ac.suspend(); }
+
+// Звук клика переключения плашки (Web Audio API — работает сразу без user gesture блокировок при клике)
+function playClick() {
+  if (!ac) {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ac.createGain(); masterGain.gain.value = 0.6; masterGain.connect(ac.destination);
+  }
+  const now = ac.currentTime;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = 'square'; o.frequency.value = 880; o.detune.value = 0;
+  g.gain.setValueAtTime(0.12, now);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+  o.connect(g); g.connect(masterGain);
+  o.start(now); o.stop(now + 0.06);
+  const o2 = ac.createOscillator(), g2 = ac.createGain();
+  o2.type = 'square'; o2.frequency.value = 1320;
+  g2.gain.setValueAtTime(0.06, now + 0.03);
+  g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+  o2.connect(g2); g2.connect(masterGain);
+  o2.start(now + 0.03); o2.stop(now + 0.09);
+}
+
+playBtn.addEventListener('click', () => {
+  playing = !playing;
+  const useYT = canUseYT && ytReady && !ytFailed;
+  if (playing) {
+    if (useYT) { ytPlayer.playVideo(); musicSub.textContent = PLAYLIST[currentTrackIdx].title; }
+    else { synthStart(); musicSub.textContent = PLAYLIST[currentTrackIdx].title + ' (Ambient)'; }
+    playBtn.textContent = '❚❚ Pause BGM';
+  } else {
+    if (useYT) ytPlayer.pauseVideo(); else synthStop();
+    playBtn.textContent = '▶ Play BGM';
+  }
+});
+</script>
+
+</body>
+</html>
