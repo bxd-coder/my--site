@@ -491,12 +491,12 @@ let currentTrackIdx = 0;
 //  ДАННЫЕ
 const DATA = {
   0: { name: "Sunday", lessons: [] },
-  1: { name: "Monday", lessons: [ { n:2, time:"10:15 – 11:50", type:"sub1", sub1:{ subject:"Ин. яз. в проф. деят.", room:"410", teacher:"Харина О.Г." } }, { n:3, time:"12:30 – 14:05", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } }, { n:4, time:"14:15 – 15:50", type:"sub2", sub2:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." } } ] },
-  2: { name: "Tuesday", lessons: [] },
-  3: { name: "Wednesday", lessons: [ { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, sub2:{ subject:"Докумен. и контр. в проф. деятельн.", room:"403", teacher:"Пашкевич М.А." } }, { n:3, time:"12:30 – 14:05", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"404", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } }, { n:4, time:"14:15 – 15:50", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ тер. профиля", room:"204", teacher:"Гордиенко М.Г." } } ] },
-  4: { name: "Thursday", lessons: [ { n:3, time:"12:30 – 14:05", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } }, { n:4, time:"14:15 – 15:50", type:"sub1", sub1:{ subject:"Фармакология", room:"313", teacher:"Штомпель К.В." } } ] },
-  5: { name: "Friday", lessons: [ { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"СУ за пац. инф. профиля", room:"ЦСПИД", teacher:"Федоренко Н.А." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } } ] },
-  6: { name: "Saturday", lessons: [ { n:2, time:"10:00 – 11:20", type:"sub1", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." } }, { n:3, time:"11:40 – 13:00", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } }, { n:4, time:"13:10 – 14:30", type:"sub2", sub2:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } } ] },
+  1: { name: "Monday", date: "23.11", lessons: [ { n:3, time:"12:30 – 14:05", type:"split", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." }, sub2:{ subject:"СУ тер. профиля ГБ1.", room:"", teacher:"Гордиенко М.Г." } }, { n:4, time:"14:15 – 15:50", type:"split", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." }, sub2:{ subject:"СУ тер. профиля ГБ1.", room:"", teacher:"Гордиенко М.Г." } } ] },
+  2: { name: "Tuesday", date: "24.11", lessons: [ { n:1, time:"08:30 – 10:05", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"204", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } }, { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"СУ за пац. педиатр. проф.", room:"204", teacher:"Кострова Е.К." }, sub2:{ subject:"СУ за пац. педиатр. проф. ГДП2", room:"", teacher:"Андросов В.М." } }, { n:3, time:"12:30 – 14:05", type:"sub1", sub1:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } }, { n:4, time:"14:15 – 15:50", type:"sub1", sub1:{ subject:"СУ за пац. дермат. проф 1", room:"ОПК", teacher:"Арапко С.А." } } ] },
+  3: { name: "Wednesday", date: "25.11", lessons: [ { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"Ин. яз. в проф. деят.", room:"410", teacher:"Харина О.Г." }, sub2:{ subject:"Ин. яз. в проф. деят.", room:"412", teacher:"Мальцева Н.И." } }, { n:3, time:"12:30 – 14:05", type:"common", subject:"СУ тер. профиля ГБ1.", room:"", teacher:"Гордиенко М.Г." } ] },
+  4: { name: "Thursday", date: "26.11", lessons: [ { n:1, time:"08:30 – 10:05", type:"split", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." }, sub2:{ subject:"СУ тер. профиля ГБ1.", room:"", teacher:"Гордиенко М.Г." } }, { n:2, time:"10:15 – 11:50", type:"split", sub1:{ subject:"СУ тер. профиля", room:"ОПК", teacher:"Байкалов И.А." }, sub2:{ subject:"СУ тер. профиля ГБ1.", room:"", teacher:"Гордиенко М.Г." } } ] },
+  5: { name: "Friday", date: "27.11", lessons: [ { n:3, time:"12:30 – 14:05", type:"split", sub1:{ subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, sub2:{ subject:"Докумен. и контр. в проф. деятельн.", room:"403", teacher:"Пашкевич М.А." } }, { n:4, time:"14:15 – 15:50", type:"split", sub1:{ subject:"Докумен. и контр. в проф. деятельн.", room:"402", teacher:"Ковальская А.С." }, sub2:{ subject:"Докумен. и контр. в проф. деятельн.", room:"403", teacher:"Пашкевич М.А." } } ] },
+  6: { name: "Saturday", date: "28.11", lessons: [] },
 };
 
 // Звонки: [номер, время, что после пары]
@@ -572,13 +572,23 @@ groupBtns.forEach(btn => {
 // ===================================================
 //  ДАТЫ В МЕНЮ
 // ===================================================
+function academicMonday(d) {
+  const m = new Date(d);
+  m.setHours(0, 0, 0, 0);
+  const wd = (m.getDay() + 6) % 7;          // Mon=0 .. Sun=6
+  m.setDate(m.getDate() - wd + (wd === 6 ? 7 : 0)); // воскресенье → следующий пн
+  return m;
+}
+
 function paintDates() {
   const now = new Date();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  const monday = academicMonday(now);
   document.querySelectorAll('.mb-date').forEach(el => {
+    const wd = Number(el.dataset.date);
+    const saved = DATA[wd] && DATA[wd].date;
+    if (saved) { el.textContent = saved; return; }
     const day = new Date(monday);
-    day.setDate(monday.getDate() + Number(el.dataset.date) - 1);
+    day.setDate(monday.getDate() + wd - 1);
     el.textContent = pad2(day.getDate()) + '.' + pad2(day.getMonth() + 1);
   });
 
@@ -628,7 +638,7 @@ function subCard(data, title, extraClass, tag) {
     <div class="sub-title">${title}${tag || ''}</div>
     <div class="subj">${data.subject}</div>
     <div class="teach">${data.teacher}</div>
-    <div class="room">Каб: ${data.room}</div>
+    ${data.room ? `<div class="room">Каб: ${data.room}</div>` : ''}
   </div>`;
 }
 
@@ -638,7 +648,7 @@ function lessonHTML(l, i, status) {
     inner = `<div>
       <div class="subj">${l.subject}</div>
       <div class="teach">${l.teacher}</div>
-      <div class="room">Каб: ${l.room}</div>
+      ${l.room ? `<div class="room">Каб: ${l.room}</div>` : ''}
     </div>`;
   } else {
     const mine = group === '1' ? l.sub1 : l.sub2;
@@ -690,9 +700,17 @@ function render(target, noAnim) {
 
   if (target === 'history') {
     contentTitle.textContent = 'PATCH HISTORY';
-    panelMeta.innerHTML = '<span class="meta-chip">VERSION 1.2</span>';
+    panelMeta.innerHTML = '<span class="meta-chip">VERSION 1.3</span>';
     contentBody.innerHTML = `
       <div class="lesson">
+        <div class="sub-title">V1.3 — 22.11.2026</div>
+        <div class="subj" style="font-size:0.9rem; text-transform:none;">
+          • Даты в меню берутся из расписания (а не считаются от сегодняшнего дня)<br>
+          • Исправлен сдвиг пар: первая пара дня больше не теряется (во вторник у 2-й подгруппы всё на месте)<br>
+          • Общие пары для двух подгрупп (colspan) показываются обеим подгруппам
+        </div>
+      </div>
+      <div class="lesson" style="opacity:0.7">
         <div class="sub-title">V1.2 — 17.11.2026</div>
         <div class="subj" style="font-size:0.9rem; text-transform:none;">
           • Исправлено разделение по группам (теперь учитываются разные кабинеты/учителя при одинаковых предметах)<br>
@@ -726,6 +744,7 @@ function render(target, noAnim) {
 
   const chips = [];
   if (isToday) chips.push('<span class="meta-chip red">СЕГОДНЯ</span>');
+  if (day.date) chips.push(`<span class="meta-chip">${day.date}</span>`);
   chips.push(`<span class="meta-chip">ПОДГРУППА ${group}</span>`);
   chips.push(`<span class="meta-chip">${day.lessons.length ? plural(day.lessons.length) : 'ПАР НЕТ'}</span>`);
   panelMeta.innerHTML = chips.join('');
